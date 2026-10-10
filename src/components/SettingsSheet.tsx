@@ -2,15 +2,18 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase, type Language, type Theme } from '../lib/supabase'
 import { applyTheme, savedTheme } from '../lib/theme'
+import { PERSON_COLORS } from '../lib/people'
 import LanguageToggle from './LanguageToggle'
 
 interface Props {
   userId: string
   name: string
+  color: string | undefined
+  onColorChange: (color: string) => void
   onClose: () => void
 }
 
-export default function SettingsSheet({ userId, name, onClose }: Props) {
+export default function SettingsSheet({ userId, name, color, onColorChange, onClose }: Props) {
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(savedTheme)
 
@@ -48,6 +51,23 @@ export default function SettingsSheet({ userId, name, onClose }: Props) {
               <button key={option} type="button" aria-pressed={theme === option} onClick={() => chooseTheme(option)}>
                 {t(`settings.${option}`)}
               </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="setting">
+          <span>{t('settings.myColor')}</span>
+          <div className="swatches" role="group" aria-label={t('settings.myColor')}>
+            {PERSON_COLORS.map((c) => (
+              <button
+                key={c}
+                type="button"
+                className="swatch"
+                style={{ background: c }}
+                aria-pressed={color === c}
+                aria-label={c}
+                onClick={() => onColorChange(c)}
+              />
             ))}
           </div>
         </div>

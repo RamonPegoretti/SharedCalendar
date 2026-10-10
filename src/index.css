@@ -55,7 +55,8 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
   font: inherit;
   color: inherit;
 }
@@ -208,7 +209,8 @@ button {
   color: var(--muted);
 }
 
-.field input {
+.field input,
+.field textarea {
   padding: 13px 14px;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -217,7 +219,12 @@ button {
   outline: none;
 }
 
-.field input:focus {
+.field textarea {
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus {
   border-color: var(--accent);
 }
 
@@ -301,7 +308,9 @@ button {
 .cell {
   aspect-ratio: 1 / 1.15;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   padding-top: 8px;
   border-radius: 12px;
 }
@@ -329,7 +338,197 @@ button {
   font-weight: 600;
 }
 
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.dot.faded {
+  opacity: 0.35;
+}
+
+.dots .more {
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--muted);
+}
+
+.fab {
+  position: fixed;
+  right: max(20px, calc(50vw - 340px));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 1.9rem;
+  line-height: 1;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+}
+
 /* ---------- day ---------- */
+
+.day {
+  padding-bottom: 88px;
+}
+
+.group {
+  margin-bottom: 24px;
+}
+
+.group h2 {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.entry {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 6px;
+  padding: 12px 14px 12px 0;
+  border-radius: 12px;
+  background: var(--surface);
+  text-align: left;
+  overflow: hidden;
+}
+
+.entry .bar {
+  flex: none;
+  width: 4px;
+  margin: -12px 0;
+}
+
+.entry .when {
+  flex: none;
+  width: 6.4em;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  padding-top: 1px;
+}
+
+.entry .what {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+  padding: 0;
+  text-align: left;
+}
+
+.entry-title {
+  overflow-wrap: anywhere;
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.note-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.entry.done .entry-title {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.tick {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+/* ---------- item sheet ---------- */
+
+.item-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 92dvh;
+  overflow-y: auto;
+}
+
+.segmented.wide {
+  display: flex;
+}
+
+.segmented.wide button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 14px;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.check input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.swatch[aria-pressed='true'] {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
 
 .day-title {
   display: flex;
@@ -406,4 +605,13 @@ button {
 .sheet-footer {
   padding-top: 16px;
   font-size: 0.875rem;
+}
+
+/* iOS shrinks date/time inputs to their content without this. */
+.field input[type='date'],
+.field input[type='time'] {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 48px;
+  width: 100%;
 }
