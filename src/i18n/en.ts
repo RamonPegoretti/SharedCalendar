@@ -10,6 +10,8 @@ const en: Strings = {
     username: 'Username',
     displayName: 'Name',
     password: 'Password',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
     noAccount: 'No account yet?',
     haveAccount: 'Already have an account?',
     wrongCredentials: 'Wrong username/email or password.',

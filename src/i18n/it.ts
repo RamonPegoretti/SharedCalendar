@@ -8,6 +8,8 @@ const it = {
     username: 'Username',
     displayName: 'Nome',
     password: 'Password',
+    showPassword: 'Mostra password',
+    hidePassword: 'Nascondi password',
     noAccount: 'Non hai un account?',
     haveAccount: 'Hai già un account?',
     wrongCredentials: 'Username/email o password errati.',

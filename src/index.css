@@ -221,6 +221,39 @@ button {
   border-color: var(--accent);
 }
 
+.password-input {
+  position: relative;
+  display: flex;
+}
+
+.password-input input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 48px;
+}
+
+.password-input .reveal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 48px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  border-radius: 0 12px 12px 0;
+}
+
+.password-input .reveal:hover,
+.password-input .reveal[aria-pressed='true'] {
+  color: var(--text);
+}
+
+/* Edge shows its own reveal eye; ours replaces it. */
+.password-input input::-ms-reveal {
+  display: none;
+}
+
 .message {
   margin: 0;
   font-size: 0.875rem;
