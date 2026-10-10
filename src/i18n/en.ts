@@ -20,6 +20,7 @@ const en: Strings = {
     full: 'This calendar already has its two accounts.',
     checkEmail: 'We sent you an email: confirm your address, then log in.',
     genericError: 'Something went wrong. Please try again.',
+    tooManyAttempts: 'Too many attempts. Wait a bit and try again.',
   },
   month: {
     today: 'Today',
