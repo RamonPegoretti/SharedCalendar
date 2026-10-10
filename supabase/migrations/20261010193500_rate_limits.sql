@@ -85,7 +85,9 @@ begin
   perform private.hit('write', ip, 120, interval '5 minutes');
 end;
 $$;
-revoke execute on function public.check_request() from public, anon, authenticated;
+-- PostgREST runs this as the caller's role, so callers must be able to execute it.
+revoke execute on function public.check_request() from public;
+grant execute on function public.check_request() to anon, authenticated;
 
 alter role authenticator set pgrst.db_pre_request = 'public.check_request';
 notify pgrst, 'reload config';
