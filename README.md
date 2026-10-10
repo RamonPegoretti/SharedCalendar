@@ -18,3 +18,6 @@ Our shared calendar: events, tasks and notes for two, on both phones.
 npm install
 npm run dev
 ```
+
+## Database changes
+SQL changes to Supabase live in `supabase/migrations/`, oldest first. They are applied to the live project by hand (Supabase SQL editor or the Supabase connector), not by the deploy workflow.

@@ -16,6 +16,7 @@ const it = {
     full: 'Questo calendario ha già i suoi due account.',
     checkEmail: 'Ti abbiamo mandato una email: conferma l’indirizzo e poi accedi.',
     genericError: 'Qualcosa è andato storto. Riprova.',
+    tooManyAttempts: 'Troppi tentativi. Aspetta un po’ e riprova.',
   },
   month: {
     today: 'Oggi',
