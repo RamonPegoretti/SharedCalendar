@@ -13,19 +13,30 @@ import {
 import { useTranslation } from 'react-i18next'
 import { dateLocale } from '../i18n'
 import { dayHref, monthHref } from '../lib/route'
+import { dayKey, sortItems, useItems } from '../lib/items'
+import type { People } from '../lib/people'
 
 interface Props {
   month: Date
+  people: People
   onOpenSettings: () => void
+  onAdd: () => void
 }
 
-export default function MonthView({ month, onOpenSettings }: Props) {
+const MAX_DOTS = 4
+
+export default function MonthView({ month, people, onOpenSettings, onAdd }: Props) {
   const { t, i18n } = useTranslation()
   const locale = dateLocale(i18n.language)
 
   const first = startOfWeek(startOfMonth(month), { locale })
   const last = endOfWeek(endOfMonth(month), { locale })
   const days = eachDayOfInterval({ start: first, end: last })
+  const { items } = useItems(first, last)
+  const byDay = new Map<string, NonNullable<typeof items>>()
+  for (const item of sortItems(items ?? [])) {
+    byDay.set(item.day, [...(byDay.get(item.day) ?? []), item])
+  }
   const weekdays = Array.from({ length: 7 }, (_, i) => format(addDays(first, i), 'EEEEEE', { locale }))
 
   return (
@@ -60,17 +71,38 @@ export default function MonthView({ month, onOpenSettings }: Props) {
       </div>
 
       <div className="grid">
-        {days.map((day) => (
+        {days.map((day) => {
+          const dayItems = byDay.get(dayKey(day)) ?? []
+          return (
           <a
             key={day.toISOString()}
             href={dayHref(day)}
             className={['cell', !isSameMonth(day, month) && 'outside', isToday(day) && 'today'].filter(Boolean).join(' ')}
-            aria-label={format(day, 'PPPP', { locale })}
+            aria-label={[format(day, 'PPPP', { locale }), dayItems.length > 0 && t('month.itemCount', { count: dayItems.length })]
+              .filter(Boolean)
+              .join(', ')}
           >
             <span className="num">{format(day, 'd')}</span>
+            {dayItems.length > 0 && (
+              <span className="dots">
+                {dayItems.slice(0, MAX_DOTS).map((item) => (
+                  <span
+                    key={item.id}
+                    className={item.done ? 'dot faded' : 'dot'}
+                    style={{ background: people.colorOf(item.owner_id) }}
+                  />
+                ))}
+                {dayItems.length > MAX_DOTS && <span className="more">+</span>}
+              </span>
+            )}
           </a>
-        ))}
+          )
+        })}
       </div>
+
+      <button className="fab" onClick={onAdd} aria-label={t('item.add')}>
+        +
+      </button>
     </main>
   )
 }
