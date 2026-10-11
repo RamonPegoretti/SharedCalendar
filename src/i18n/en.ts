@@ -90,6 +90,16 @@ const en: Strings = {
     startRequired: 'Pick a start time or tick “All day”.',
     endBeforeStart: 'The end must be after the start.',
     saveError: 'Could not save. Please try again.',
+    reminders: 'Reminders',
+    remindersOff: 'To get them on this phone, turn on notifications in settings.',
+  },
+  reminder: {
+    timed0: 'At the time',
+    timed15: '15 min before',
+    timed60: '1 hour before',
+    timed1440: '1 day before',
+    untimed0: 'On the day (9:00)',
+    untimed1440: 'Day before (9:00)',
   },
   repeat: {
     never: 'Never',
@@ -119,6 +129,20 @@ const en: Strings = {
     logout: 'Log out',
     myColor: 'My color',
     close: 'Close',
+  },
+  notify: {
+    title: 'Notifications on this phone',
+    turnOn: 'Turn on',
+    on: 'On',
+    why: 'Reminders, and a heads-up when the other person changes something.',
+    install:
+      'On iPhone, notifications only work from the app on your Home Screen: in Safari tap Share, then “Add to Home Screen”, and open the calendar from there.',
+    denied: 'Notifications are blocked for this app. Allow them again in your phone’s settings, then reopen the calendar.',
+    unsupported: 'This browser doesn’t support notifications.',
+    partner: 'Tell me when {{name}} adds or changes something',
+    test: 'Send a test notification',
+    testSent: 'Sent: it should arrive in a few seconds.',
+    error: 'That didn’t work. Try again in a minute.',
   },
 }
 

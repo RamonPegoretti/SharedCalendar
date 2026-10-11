@@ -10,7 +10,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'badge-96.png'],
       manifest: {
         name: 'Calendario',
         short_name: 'Calendario',
@@ -30,6 +30,8 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/SharedCalendar/index.html',
+        // Push notification handling lives in its own small file.
+        importScripts: ['push-sw.js'],
       },
     }),
   ],

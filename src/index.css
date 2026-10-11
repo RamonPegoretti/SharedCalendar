@@ -575,6 +575,8 @@ button {
   padding: 20px 20px max(24px, env(safe-area-inset-bottom));
   border-radius: 20px 20px 0 0;
   background: var(--surface);
+  max-height: 92dvh;
+  overflow-y: auto;
   animation: slide-up 0.2s ease-out;
 }
 
@@ -647,4 +649,82 @@ button {
   margin-left: 6px;
   font-size: 0.85em;
   color: var(--muted);
+}
+
+/* ---------- notifications ---------- */
+
+.setting.stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.setting-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.setting.stacked p {
+  margin: 0;
+}
+
+.setting.stacked .link {
+  align-self: flex-start;
+  font-size: 0.875rem;
+}
+
+.pill[aria-pressed='true'] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pill:disabled {
+  opacity: 0.6;
+}
+
+/* Reminder choices: several can be on at once. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* An on/off switch drawn over a checkbox. */
+.toggle {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.15s, background 0.15s;
+}
+
+.toggle:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle:checked::after {
+  transform: translateX(18px);
+  background: var(--accent-text);
 }
