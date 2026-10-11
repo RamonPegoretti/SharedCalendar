@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase, type Language, type Theme } from '../lib/supabase'
 import { applyTheme, savedTheme } from '../lib/theme'
 import { PERSON_COLORS } from '../lib/people'
+import type { Background } from '../lib/background'
 import { disablePush, enablePush, pushState, sendTestPush, type PushState } from '../lib/push'
 import LanguageToggle from './LanguageToggle'
 
@@ -14,6 +15,7 @@ interface Props {
   partnerName: string | undefined
   notifyPartner: boolean
   onNotifyPartnerChange: (on: boolean) => void
+  background: Background
   onClose: () => void
 }
 
@@ -25,10 +27,28 @@ export default function SettingsSheet({
   partnerName,
   notifyPartner,
   onNotifyPartnerChange,
+  background,
   onClose,
 }: Props) {
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(savedTheme)
+  const [photoState, setPhotoState] = useState<'idle' | 'busy' | 'error'>('idle')
+
+  async function changePhoto(task: () => Promise<void>) {
+    setPhotoState('busy')
+    try {
+      await task()
+      setPhotoState('idle')
+    } catch {
+      setPhotoState('error')
+    }
+  }
+
+  function pickPhoto(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (file) void changePhoto(() => background.choose(file))
+  }
 
   // Saved on the account too, so the choice follows the person to other devices.
   const save = (fields: { language?: Language; theme?: Theme; notify_partner?: boolean }) =>
@@ -121,6 +141,30 @@ export default function SettingsSheet({
                 onClick={() => onColorChange(c)}
               />
             ))}
+          </div>
+        </div>
+
+        <div className="setting">
+          <span>
+            {t('settings.background')}
+            {photoState === 'error' && <span className="message error">{t('settings.backgroundError')}</span>}
+          </span>
+          <div className="photo-actions">
+            {photoState === 'busy' ? (
+              <span className="muted">{t('settings.backgroundSaving')}</span>
+            ) : (
+              <>
+                {background.url && (
+                  <button type="button" className="link danger-link" onClick={() => void changePhoto(background.remove)}>
+                    {t('settings.backgroundRemove')}
+                  </button>
+                )}
+                <label className="pill photo-pick">
+                  {background.url ? t('settings.backgroundChange') : t('settings.backgroundChoose')}
+                  <input type="file" accept="image/*" onChange={pickPhoto} />
+                </label>
+              </>
+            )}
           </div>
         </div>
 

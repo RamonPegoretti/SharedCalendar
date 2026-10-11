@@ -130,6 +130,12 @@ const en: Strings = {
     logout: 'Log out',
     myColor: 'My color',
     close: 'Close',
+    background: 'Background',
+    backgroundChoose: 'Choose photo',
+    backgroundChange: 'Change',
+    backgroundRemove: 'Remove',
+    backgroundSaving: 'Saving…',
+    backgroundError: 'Couldn’t save the background. Try again.',
   },
   notify: {
     title: 'Notifications on this phone',

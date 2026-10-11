@@ -128,6 +128,12 @@ const it = {
     logout: 'Esci',
     myColor: 'Il mio colore',
     close: 'Chiudi',
+    background: 'Sfondo',
+    backgroundChoose: 'Scegli foto',
+    backgroundChange: 'Cambia',
+    backgroundRemove: 'Rimuovi',
+    backgroundSaving: 'Salvataggio…',
+    backgroundError: 'Non è stato possibile salvare lo sfondo. Riprova.',
   },
   notify: {
     title: 'Notifiche su questo telefono',

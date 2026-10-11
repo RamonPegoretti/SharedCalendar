@@ -4,6 +4,7 @@ import { applyTheme } from './lib/theme'
 import { useRoute } from './lib/route'
 import { useProfile, useSession } from './lib/useSession'
 import { usePeople } from './lib/people'
+import { useBackground } from './lib/background'
 import { dayKey } from './lib/items'
 import { refreshPush } from './lib/push'
 import { supabase } from './lib/supabase'
@@ -28,6 +29,7 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
   const profile = useProfile(userId)
   const { people, setMyColor } = usePeople(userId)
   const route = useRoute()
+  const background = useBackground(userId)
   const [sheet, setSheet] = useState<Sheet | null>(null)
   // Changed in settings during this visit (the profile itself is loaded once).
   const [notifyPartner, setNotifyPartner] = useState<boolean>()
@@ -54,8 +56,15 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
   const close = () => setSheet(null)
   const saved = () => setVersion((v) => v + 1)
 
+  // Lets the styles make cells and text stand out over the photo.
+  useEffect(() => {
+    if (background.url) document.documentElement.dataset.photo = ''
+    else delete document.documentElement.dataset.photo
+  }, [background.url])
+
   return (
     <>
+      {background.url && <div className="photo" style={{ backgroundImage: `url(${background.url})` }} aria-hidden="true" />}
       {route.view === 'day' ? (
         <DayView
           key={`${dayKey(route.day)}-${version}`}
@@ -82,6 +91,7 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
           notifyPartner={notifyPartner ?? profile?.notify_partner ?? true}
           onNotifyPartnerChange={setNotifyPartner}
           onColorChange={(c) => void setMyColor(c)}
+          background={background}
           onClose={close}
         />
       )}
