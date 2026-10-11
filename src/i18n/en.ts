@@ -136,6 +136,10 @@ const en: Strings = {
     backgroundRemove: 'Remove',
     backgroundSaving: 'Saving…',
     backgroundError: 'Couldn’t save the background. Try again.',
+    backgroundAdjust: 'Drag the photo and pinch to zoom until it looks right.',
+    backgroundZoom: 'Zoom',
+    backgroundCancel: 'Cancel',
+    backgroundConfirm: 'Confirm',
   },
   notify: {
     title: 'Notifications on this phone',

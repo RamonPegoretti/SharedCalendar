@@ -134,6 +134,10 @@ const it = {
     backgroundRemove: 'Rimuovi',
     backgroundSaving: 'Salvataggio…',
     backgroundError: 'Non è stato possibile salvare lo sfondo. Riprova.',
+    backgroundAdjust: 'Trascina la foto e avvicina o allontana le dita per sistemarla.',
+    backgroundZoom: 'Zoom',
+    backgroundCancel: 'Annulla',
+    backgroundConfirm: 'Conferma',
   },
   notify: {
     title: 'Notifiche su questo telefono',

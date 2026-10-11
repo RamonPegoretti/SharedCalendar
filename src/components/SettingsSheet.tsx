@@ -6,6 +6,7 @@ import { PERSON_COLORS } from '../lib/people'
 import type { Background } from '../lib/background'
 import { disablePush, enablePush, pushState, sendTestPush, type PushState } from '../lib/push'
 import LanguageToggle from './LanguageToggle'
+import PhotoCropper from './PhotoCropper'
 
 interface Props {
   userId: string
@@ -33,6 +34,8 @@ export default function SettingsSheet({
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(savedTheme)
   const [photoState, setPhotoState] = useState<'idle' | 'busy' | 'error'>('idle')
+  // A picked photo waiting to be moved and zoomed into place.
+  const [cropping, setCropping] = useState<File | null>(null)
 
   async function changePhoto(task: () => Promise<void>) {
     setPhotoState('busy')
@@ -47,7 +50,12 @@ export default function SettingsSheet({
   function pickPhoto(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     e.target.value = ''
-    if (file) void changePhoto(() => background.choose(file))
+    if (file) setCropping(file)
+  }
+
+  function savePhoto(photo: Blob) {
+    setCropping(null)
+    void changePhoto(() => background.choose(photo))
   }
 
   // Saved on the account too, so the choice follows the person to other devices.
@@ -208,6 +216,7 @@ export default function SettingsSheet({
           {t('privacy')}
         </a>
       </section>
+      {cropping && <PhotoCropper file={cropping} onCancel={() => setCropping(null)} onConfirm={savePhoto} />}
     </div>
   )
 }
