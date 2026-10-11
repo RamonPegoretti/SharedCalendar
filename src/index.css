@@ -928,6 +928,18 @@ button {
   vertical-align: 1px;
 }
 
+.setting.wraps {
+  flex-wrap: wrap;
+}
+
+.setting-wheel {
+  flex-basis: 100%;
+}
+
+.swatch.rainbow {
+  background: conic-gradient(#f87171, #fbbf24, #4ade80, #22d3ee, #818cf8, #f472b6, #f87171);
+}
+
 .dot.rainbow {
   background: conic-gradient(#f87171, #fbbf24, #4ade80, #22d3ee, #818cf8, #f472b6, #f87171);
 }

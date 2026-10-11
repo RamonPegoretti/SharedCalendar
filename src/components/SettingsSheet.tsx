@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react'
+import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase, type Language, type Theme } from '../lib/supabase'
 import { applyTheme, savedTheme } from '../lib/theme'
@@ -7,6 +7,7 @@ import type { Background } from '../lib/background'
 import { disablePush, enablePush, pushState, sendTestPush, type PushState } from '../lib/push'
 import LanguageToggle from './LanguageToggle'
 import PhotoCropper from './PhotoCropper'
+import ColorWheel from './ColorWheel'
 
 interface Props {
   userId: string
@@ -36,6 +37,17 @@ export default function SettingsSheet({
   const [photoState, setPhotoState] = useState<'idle' | 'busy' | 'error'>('idle')
   // A picked photo waiting to be moved and zoomed into place.
   const [cropping, setCropping] = useState<File | null>(null)
+  // Any other color, from the wheel. Shown right away, saved once the finger stops.
+  const [wheelOpen, setWheelOpen] = useState(false)
+  const [wheelColor, setWheelColor] = useState<string | null>(null)
+  const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  function pickOnWheel(c: string) {
+    setWheelColor(c)
+    clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => onColorChange(c), 400)
+  }
+  const shownColor = wheelColor ?? color
+  const customColor = !!shownColor && !PERSON_COLORS.includes(shownColor)
 
   async function changePhoto(task: () => Promise<void>) {
     setPhotoState('busy')
@@ -135,7 +147,7 @@ export default function SettingsSheet({
           </div>
         </div>
 
-        <div className="setting">
+        <div className="setting wraps">
           <span>{t('settings.myColor')}</span>
           <div className="swatches" role="group" aria-label={t('settings.myColor')}>
             {PERSON_COLORS.map((c) => (
@@ -144,12 +156,31 @@ export default function SettingsSheet({
                 type="button"
                 className="swatch"
                 style={{ background: c }}
-                aria-pressed={color === c}
+                aria-pressed={shownColor === c}
                 aria-label={c}
-                onClick={() => onColorChange(c)}
+                onClick={() => {
+                  clearTimeout(saveTimer.current)
+                  setWheelColor(null)
+                  setWheelOpen(false)
+                  onColorChange(c)
+                }}
               />
             ))}
+            <button
+              type="button"
+              className="swatch rainbow"
+              style={customColor ? { background: shownColor } : undefined}
+              aria-pressed={customColor}
+              aria-expanded={wheelOpen}
+              aria-label={t('settings.otherColor')}
+              onClick={() => setWheelOpen((open) => !open)}
+            />
           </div>
+          {wheelOpen && (
+            <div className="setting-wheel">
+              <ColorWheel value={shownColor ?? PERSON_COLORS[0]} onChange={pickOnWheel} label={t('settings.otherColor')} />
+            </div>
+          )}
         </div>
 
         <div className="setting">
