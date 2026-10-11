@@ -8,5 +8,6 @@ import App from './App.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    <footer className="version">v{__APP_VERSION__}</footer>
   </StrictMode>,
 )
