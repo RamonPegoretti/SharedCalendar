@@ -121,6 +121,7 @@ const it = {
     signedInAs: 'Accesso come {{name}}',
     logout: 'Esci',
     myColor: 'Il mio colore',
+    otherColor: 'Altro colore',
     close: 'Chiudi',
     background: 'Sfondo',
     backgroundChoose: 'Scegli foto',

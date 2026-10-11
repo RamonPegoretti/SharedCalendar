@@ -123,6 +123,7 @@ const en: Strings = {
     signedInAs: 'Signed in as {{name}}',
     logout: 'Log out',
     myColor: 'My color',
+    otherColor: 'Other color',
     close: 'Close',
     background: 'Background',
     backgroundChoose: 'Choose photo',
