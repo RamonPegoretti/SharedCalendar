@@ -4,7 +4,8 @@ import { applyTheme } from './lib/theme'
 import { useRoute } from './lib/route'
 import { useProfile, useSession } from './lib/useSession'
 import { usePeople } from './lib/people'
-import { dayKey, type Item } from './lib/items'
+import { dayKey } from './lib/items'
+import type { Occurrence } from './lib/recurrence'
 import LoginView from './views/LoginView'
 import MonthView from './views/MonthView'
 import DayView from './views/DayView'
@@ -19,7 +20,7 @@ export default function App() {
 }
 
 /** The open sheet: settings, a new item for a day, or an existing item. */
-type Sheet = { kind: 'settings' } | { kind: 'new'; day: string } | { kind: 'item'; item: Item }
+type Sheet = { kind: 'settings' } | { kind: 'new'; day: string } | { kind: 'item'; item: Occurrence }
 
 function SignedIn({ userId, email }: { userId: string; email: string }) {
   const profile = useProfile(userId)
