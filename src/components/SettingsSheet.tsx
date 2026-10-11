@@ -212,7 +212,10 @@ export default function SettingsSheet({
             {t('settings.logout')}
           </button>
         </footer>
-        <a className="privacy-link small muted" href={`${import.meta.env.BASE_URL}privacy.html`}>
+        <a className="privacy-link small muted" href={`${import.meta.env.BASE_URL}widget.html`}>
+          {t('widget')}
+        </a>
+        <a className="privacy-link tight small muted" href={`${import.meta.env.BASE_URL}privacy.html`}>
           {t('privacy')}
         </a>
       </section>

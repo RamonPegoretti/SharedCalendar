@@ -1,6 +1,7 @@
 const it = {
   appName: 'Calendario',
   privacy: 'Privacy',
+  widget: 'Widget per iPhone',
   auth: {
     login: 'Accedi',
     identifier: 'Username o email',

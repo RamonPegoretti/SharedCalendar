@@ -955,3 +955,7 @@ button {
   padding: 8px;
   text-align: center;
 }
+
+.privacy-link.tight {
+  margin-top: 0;
+}

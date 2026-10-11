@@ -3,6 +3,7 @@ import type { Strings } from './it'
 const en: Strings = {
   appName: 'Calendar',
   privacy: 'Privacy',
+  widget: 'iPhone widget',
   auth: {
     login: 'Log in',
     identifier: 'Username or email',
