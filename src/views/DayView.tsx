@@ -2,7 +2,8 @@ import { addDays, format, isToday } from 'date-fns'
 import { useTranslation } from 'react-i18next'
 import { dateLocale } from '../i18n'
 import { dayHref, monthHref } from '../lib/route'
-import { setDone, shortTime, sortItems, useItems, type Item } from '../lib/items'
+import { setDone, shortTime, sortItems, useItems } from '../lib/items'
+import type { Occurrence } from '../lib/recurrence'
 import type { People } from '../lib/people'
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
@@ -10,7 +11,7 @@ const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 interface Props {
   day: Date
   people: People
-  onOpenItem: (item: Item) => void
+  onOpenItem: (item: Occurrence) => void
   onAdd: () => void
 }
 
@@ -24,17 +25,25 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
   const tasks = sorted.filter((i) => i.kind === 'task')
   const notes = sorted.filter((i) => i.kind === 'note')
 
-  async function toggle(task: Item) {
-    await setDone(task.id, !task.done)
+  async function toggle(task: Occurrence) {
+    await setDone(task, !task.done)
     void reload()
   }
 
-  const when = (i: Item) =>
+  const when = (i: Occurrence) =>
     i.all_day || !i.start_time
       ? t('item.allDay')
       : i.end_time
         ? `${shortTime(i.start_time)}–${shortTime(i.end_time)}`
         : shortTime(i.start_time)
+
+  // A small loop marks items that repeat.
+  const repeats = (i: Occurrence) =>
+    i.series && (
+      <span className="repeats" role="img" aria-label={t('day.repeats')} title={t('day.repeats')}>
+        ↻
+      </span>
+    )
 
   return (
     <main className="day">
@@ -66,11 +75,14 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
         <section className="group">
           <h2>{t('day.events')}</h2>
           {events.map((ev) => (
-            <button key={ev.id} className="entry" onClick={() => onOpenItem(ev)}>
+            <button key={ev.key} className="entry" onClick={() => onOpenItem(ev)}>
               <span className="bar" style={{ background: people.colorOf(ev.owner_id) }} />
               <span className="when">{when(ev)}</span>
               <span className="what">
-                <span className="entry-title">{ev.title}</span>
+                <span className="entry-title">
+                  {ev.title}
+                  {repeats(ev)}
+                </span>
                 {ev.location && <span className="muted small">{ev.location}</span>}
               </span>
             </button>
@@ -82,7 +94,7 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
         <section className="group">
           <h2>{t('day.tasks')}</h2>
           {tasks.map((task) => (
-            <div key={task.id} className={task.done ? 'entry done' : 'entry'}>
+            <div key={task.key} className={task.done ? 'entry done' : 'entry'}>
               <span className="bar" style={{ background: people.colorOf(task.owner_id) }} />
               <input
                 type="checkbox"
@@ -92,7 +104,10 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
                 aria-label={task.done ? t('day.markUndone') : t('day.markDone')}
               />
               <button className="what" onClick={() => onOpenItem(task)}>
-                <span className="entry-title">{task.title}</span>
+                <span className="entry-title">
+                  {task.title}
+                  {repeats(task)}
+                </span>
                 <span className="muted small">
                   {task.start_time && `${shortTime(task.start_time)} · `}
                   {task.owner_id ? people.nameOf(task.owner_id) : t('tag.both')}
@@ -107,10 +122,13 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
         <section className="group">
           <h2>{t('day.notes')}</h2>
           {notes.map((note) => (
-            <button key={note.id} className="entry" onClick={() => onOpenItem(note)}>
+            <button key={note.key} className="entry" onClick={() => onOpenItem(note)}>
               <span className="bar" style={{ background: people.colorOf(note.owner_id) }} />
               <span className="what">
-                <span className="entry-title">{note.title}</span>
+                <span className="entry-title">
+                  {note.title}
+                  {repeats(note)}
+                </span>
                 {note.notes && <span className="muted small note-text">{note.notes}</span>}
               </span>
             </button>

@@ -87,7 +87,7 @@ export default function MonthView({ month, people, onOpenSettings, onAdd }: Prop
               <span className="dots">
                 {dayItems.slice(0, MAX_DOTS).map((item) => (
                   <span
-                    key={item.id}
+                    key={item.key}
                     className={item.done ? 'dot faded' : 'dot'}
                     style={{ background: people.colorOf(item.owner_id) }}
                   />
