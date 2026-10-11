@@ -14,6 +14,14 @@ Our shared calendar: events, tasks and notes for two, on both phones.
 - Logging in with a username goes through the Edge Function in `supabase/functions/login`, so nobody's email address is ever sent to the browser. Deploy it with `supabase functions deploy login --no-verify-jwt`.
 - Every push to `main` is built and published to GitHub Pages by `.github/workflows/deploy.yml`.
 
+## Version number
+The faint "v x.y.z" at the bottom of the screen is the `version` in `package.json`. Every pull request raises it by how big the change is, and the deploy workflow fails a PR that doesn't:
+- **major** (2.0.0) for a big change, like a redesign or something that works differently,
+- **minor** (1.1.0) for a new feature,
+- **patch** (1.0.1) for a fix or a small tweak.
+
+Bump it with `npm version patch --no-git-tag-version` (or `minor` / `major`) so `package-lock.json` follows.
+
 ## Run it locally
 ```
 npm install

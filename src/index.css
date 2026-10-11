@@ -396,7 +396,7 @@ button {
 
 /* ---------- version ---------- */
 
-/* Tiny "v1.0.123" under everything so it's easy to tell when the app updated.
+/* Tiny "v1.0.0" under everything so it's easy to tell when the app updated.
    It sits in the screen's bottom margin and lets touches pass through. */
 .version {
   margin: auto 0 -12px;
