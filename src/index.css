@@ -394,6 +394,27 @@ button {
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
 }
 
+/* ---------- version ---------- */
+
+/* Tiny "v1.0.0" under everything so it's easy to tell when the app updated.
+   It sits in the screen's bottom margin and lets touches pass through. */
+.version {
+  margin: auto 0 -12px;
+  padding-top: 2px;
+  text-align: center;
+  font-size: 0.65rem;
+  line-height: 1;
+  color: var(--muted);
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+:root[data-photo] .version {
+  color: var(--text);
+  text-shadow: 0 1px 3px color-mix(in srgb, var(--bg) 90%, transparent);
+}
+
 /* ---------- background photo ---------- */
 
 /* The photo sits behind everything, dimmed with the theme's background colour

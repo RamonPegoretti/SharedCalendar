@@ -24,6 +24,20 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Check the version was raised
+        # Every change shows up on the phone as a new "v x.y.z": bump major for big
+        # changes, minor for new features, patch for fixes (see README).
+        if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+        run: |
+          git fetch --depth=1 origin "$GITHUB_BASE_REF"
+          node -e '
+            const [base, head] = [process.argv[1], require("./package.json").version]
+            const n = (v) => v.split(".").map(Number)
+            const [a, b] = [n(base), n(head)]
+            const raised = b[0] - a[0] || b[1] - a[1] || b[2] - a[2]
+            if (!(raised > 0)) { console.error(`package.json version must go above ${base} (it is ${head})`); process.exit(1) }
+            console.log(`version ${base} -> ${head}`)
+          ' "$(git show FETCH_HEAD:package.json | node -pe 'JSON.parse(require("fs").readFileSync(0)).version')"
       - run: npm ci
       - run: npm run lint
       - run: npm run build
