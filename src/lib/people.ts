@@ -16,6 +16,8 @@ export interface People {
   partner: Person | undefined
   /** Color for an item's owner (null = ours). */
   colorOf: (ownerId: string | null) => string
+  /** Color an item shows in: its own, or else its owner's. */
+  colorOfItem: (item: { color: string | null; owner_id: string | null }) => string
   nameOf: (id: string | null) => string | undefined
 }
 
@@ -45,10 +47,13 @@ export function usePeople(myId: string) {
     [myId],
   )
 
+  const colorOf = (ownerId: string | null) =>
+    ownerId ? (list.find((p) => p.id === ownerId)?.color ?? OURS_COLOR) : OURS_COLOR
   const people: People = {
     me: list.find((p) => p.id === myId),
     partner: list.find((p) => p.id !== myId),
-    colorOf: (ownerId) => (ownerId ? (list.find((p) => p.id === ownerId)?.color ?? OURS_COLOR) : OURS_COLOR),
+    colorOf,
+    colorOfItem: (item) => item.color ?? colorOf(item.owner_id),
     nameOf: (id) => list.find((p) => p.id === id)?.display_name,
   }
 
