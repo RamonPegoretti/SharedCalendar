@@ -280,13 +280,6 @@ button {
   color: var(--accent);
 }
 
-.switch {
-  margin: 0;
-  text-align: center;
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
 /* ---------- month ---------- */
 
 /* Leave up/down scrolling and pinch to the browser; sideways swipes are ours. */

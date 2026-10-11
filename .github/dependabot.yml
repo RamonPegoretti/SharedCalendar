@@ -1,12 +1,15 @@
-# Opens a pull request when a library the app uses gets a security fix.
+# Only security fixes: routine version bumps are switched off (limit 0), so
+# GitHub opens a pull request just when a library the app uses has a known
+# vulnerability. Needs "Dependabot security updates" on in the repo settings.
 version: 2
 updates:
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+    open-pull-requests-limit: 0

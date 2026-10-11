@@ -10,7 +10,8 @@ Our shared calendar: events, tasks and notes for two, on both phones.
 
 ## How it's built
 - React + TypeScript + Vite, installable as a PWA.
-- Login and data on Supabase (free tier). Only two accounts can ever be created.
+- Login and data on Supabase (free tier). Only two accounts can ever be created, and the app has no sign-up screen.
+- Logging in with a username goes through the Edge Function in `supabase/functions/login`, so nobody's email address is ever sent to the browser. Deploy it with `supabase functions deploy login --no-verify-jwt`.
 - Every push to `main` is built and published to GitHub Pages by `.github/workflows/deploy.yml`.
 
 ## Run it locally

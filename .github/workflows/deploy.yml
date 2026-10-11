@@ -31,6 +31,7 @@ jobs:
         with:
           deno-version: v2.x
       - run: deno test supabase/functions/push
+      - run: deno check --config supabase/functions/login/deno.json supabase/functions/login/index.ts
       - if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
