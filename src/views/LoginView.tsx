@@ -193,6 +193,9 @@ export default function LoginView() {
           </button>
         </p>
       </form>
+      <a className="privacy-link small muted" href={`${import.meta.env.BASE_URL}privacy.html`}>
+        {t('privacy')}
+      </a>
     </main>
   )
 }
