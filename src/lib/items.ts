@@ -38,12 +38,14 @@ export interface Item {
   series_day: string | null
   /** Push reminders, in minutes before the start (untimed items: before 9:00 that day). */
   reminders: number[]
+  /** The item's own color (#rrggbb), or null for the color of whose it is. */
+  color: string | null
 }
 
 /** The fields the app sends; the database fills in the rest. */
 export type ItemInput = Pick<
   Item,
-  'kind' | 'title' | 'notes' | 'location' | 'day' | 'all_day' | 'start_time' | 'end_time' | 'done' | 'owner_id'
+  'kind' | 'title' | 'notes' | 'location' | 'day' | 'all_day' | 'start_time' | 'end_time' | 'done' | 'owner_id' | 'color'
 >
 export type RepeatInput = Pick<Item, 'repeat' | 'repeat_every' | 'repeat_until'>
 
@@ -73,7 +75,7 @@ export function sortItems<T extends Item>(items: T[]) {
 
 const columns =
   'id, kind, title, notes, location, day, all_day, start_time, end_time, done, owner_id, created_by, updated_by, updated_at, ' +
-  'repeat, repeat_every, repeat_until, skip_days, series_id, series_day, reminders'
+  'repeat, repeat_every, repeat_until, skip_days, series_id, series_day, reminders, color'
 
 /**
  * Everything happening from `from` to `to` (inclusive), with repeating items
@@ -143,6 +145,7 @@ export function overrideOf(occ: Occurrence): Row {
     done: occ.done,
     owner_id: occ.owner_id,
     reminders: occ.reminders,
+    color: occ.color,
     series_id: occ.series!.id,
     series_day: occ.seriesDay,
   }

@@ -82,7 +82,7 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
           <h2>{t('day.events')}</h2>
           {events.map((ev) => (
             <button key={ev.key} className="entry" onClick={() => onOpenItem(ev)}>
-              <span className="bar" style={{ background: people.colorOf(ev.owner_id) }} />
+              <span className="bar" style={{ background: people.colorOfItem(ev) }} />
               <span className="when">{when(ev)}</span>
               <span className="what">
                 <span className="entry-title">
@@ -101,7 +101,7 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
           <h2>{t('day.tasks')}</h2>
           {tasks.map((task) => (
             <div key={task.key} className={task.done ? 'entry done' : 'entry'}>
-              <span className="bar" style={{ background: people.colorOf(task.owner_id) }} />
+              <span className="bar" style={{ background: people.colorOfItem(task) }} />
               <input
                 type="checkbox"
                 className="tick"
@@ -129,7 +129,7 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
           <h2>{t('day.notes')}</h2>
           {notes.map((note) => (
             <button key={note.key} className="entry" onClick={() => onOpenItem(note)}>
-              <span className="bar" style={{ background: people.colorOf(note.owner_id) }} />
+              <span className="bar" style={{ background: people.colorOfItem(note) }} />
               <span className="what">
                 <span className="entry-title">
                   {note.title}

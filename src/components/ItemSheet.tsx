@@ -18,6 +18,7 @@ import {
 import type { Occurrence } from '../lib/recurrence'
 import type { People } from '../lib/people'
 import { notificationsAllowed } from '../lib/push'
+import ColorWheel from './ColorWheel'
 
 interface Props {
   /** The item being edited (as it shows on its day), or undefined to add a new one. */
@@ -49,6 +50,8 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
   const [notes, setNotes] = useState(item?.notes ?? '')
   const [owner, setOwner] = useState<string | null>(item ? item.owner_id : (people.me?.id ?? null))
   const [reminders, setReminders] = useState<number[]>(item?.reminders ?? [])
+  const [color, setColor] = useState<string | null>(item?.color ?? null)
+  const [wheelOpen, setWheelOpen] = useState(false)
   // A repeating item asks whether a change is for this day only or for the whole series.
   const series = item?.series
   const [scope, setScope] = useState<'one' | 'all'>('one')
@@ -67,6 +70,7 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
     setNotes(from.notes)
     setOwner(from.owner_id)
     setReminders(from.reminders)
+    setColor(from.color)
   }
   const rule = series ?? item
   const [repeat, setRepeat] = useState<Repeat | ''>(rule?.repeat ?? '')
@@ -110,6 +114,7 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
       done: kind === 'task' ? (item?.done ?? false) : false,
       owner_id: owner,
       reminders: reminders.filter((m) => reminderChoices.includes(m)),
+      color,
     }
     const rules = repeat
       ? { repeat, repeat_every: everyN, repeat_until: until || null, done: false }
@@ -310,6 +315,38 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="field">
+          {t('item.color')}
+          <div className="chips" role="group" aria-label={t('item.color')}>
+            <button
+              type="button"
+              className="pill"
+              aria-pressed={!color}
+              onClick={() => {
+                setColor(null)
+                setWheelOpen(false)
+              }}
+            >
+              <span className="dot" style={{ background: people.colorOf(owner) }} />
+              {t('item.colorDefault')}
+            </button>
+            <button
+              type="button"
+              className="pill"
+              aria-pressed={!!color}
+              aria-expanded={wheelOpen}
+              onClick={() => {
+                setWheelOpen((open) => !open || !color)
+                if (!color) setColor(people.colorOf(owner))
+              }}
+            >
+              <span className="dot rainbow" style={color ? { background: color } : undefined} />
+              {t('item.colorOwn')}
+            </button>
+          </div>
+          {wheelOpen && color && <ColorWheel value={color} onChange={setColor} label={t('item.color')} />}
         </div>
 
         <label className="field">
