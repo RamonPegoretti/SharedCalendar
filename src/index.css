@@ -485,6 +485,102 @@ button {
   margin-top: 4px;
 }
 
+/* ---------- photo cropper ---------- */
+
+/* Full screen: the screen itself is the frame, so what you see is what you get. */
+.cropper {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: #000;
+  color: #fff;
+}
+
+.cropper-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+}
+
+.cropper-frame img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The same dimming and tiles as the real month, faintly. */
+.cropper-preview {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 4px;
+  padding: calc(max(16px, env(safe-area-inset-top)) + 81px) 16px max(16px, env(safe-area-inset-bottom));
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+  pointer-events: none;
+}
+
+.cropper-preview span {
+  border-radius: 10px;
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.cropper-hint {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.55);
+  font-size: 0.875rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+.cropper-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 20px max(20px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.75) 30%);
+}
+
+.cropper-zoom {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.cropper-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.cropper-buttons .pill {
+  flex: 1;
+  padding: 14px;
+  border-color: rgb(255 255 255 / 0.4);
+  color: #fff;
+  background: rgb(0 0 0 / 0.3);
+  text-align: center;
+}
+
+.cropper-buttons .primary {
+  flex: 1;
+}
+
 /* ---------- day ---------- */
 
 .day {

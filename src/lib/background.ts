@@ -35,24 +35,37 @@ const toDataUrl = (blob: Blob) =>
     reader.readAsDataURL(blob)
   })
 
-/** Shrinks a picked photo to a JPEG no larger than MAX_SIDE on its long side. */
-async function shrink(file: File): Promise<Blob> {
-  const src = URL.createObjectURL(file)
-  try {
-    const img = new Image()
-    img.src = src
-    await img.decode()
-    const scale = Math.min(1, MAX_SIDE / Math.max(img.naturalWidth, img.naturalHeight))
-    const canvas = document.createElement('canvas')
-    canvas.width = Math.round(img.naturalWidth * scale)
-    canvas.height = Math.round(img.naturalHeight * scale)
-    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
-    return await new Promise<Blob>((resolve, reject) =>
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', QUALITY),
-    )
-  } finally {
-    URL.revokeObjectURL(src)
-  }
+/** Opens a picked photo so it can be shown and cropped. */
+export async function loadPhoto(file: Blob): Promise<HTMLImageElement> {
+  const img = new Image()
+  img.src = URL.createObjectURL(file)
+  await img.decode()
+  return img
+}
+
+/** The part of the photo to keep, in the photo's own pixels. */
+export interface Crop {
+  x: number
+  y: number
+  width: number
+  height: number
+}
+
+/**
+ * Cuts the chosen part out of the photo as a JPEG shaped like `width` x
+ * `height`, no larger than MAX_SIDE on its long side and never enlarged.
+ */
+export async function cropPhoto(img: HTMLImageElement, crop: Crop, width: number, height: number): Promise<Blob> {
+  const scale = Math.min(1, MAX_SIDE / Math.max(width, height), crop.width / width)
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(width * scale)
+  canvas.height = Math.round(height * scale)
+  const ctx = canvas.getContext('2d')!
+  ctx.imageSmoothingQuality = 'high'
+  ctx.drawImage(img, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height)
+  return new Promise<Blob>((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('encode failed'))), 'image/jpeg', QUALITY),
+  )
 }
 
 /**
@@ -87,8 +100,7 @@ export function useBackground(userId: string) {
   }, [userId])
 
   const choose = useCallback(
-    async (file: File) => {
-      const blob = await shrink(file)
+    async (blob: Blob) => {
       const { error } = await supabase.storage
         .from(BUCKET)
         .upload(pathFor(userId), blob, { upsert: true, contentType: 'image/jpeg', cacheControl: '0' })
