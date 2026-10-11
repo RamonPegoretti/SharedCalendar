@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widget iPhone</title>
+    <style>
+      :root {
+        --bg: #121214;
+        --text: #ececf1;
+        --muted: #8b8b96;
+        --border: #2e2e34;
+        --accent: #8ab4ff;
+        color-scheme: dark;
+      }
+      :root[data-theme='light'] {
+        --bg: #fafafa;
+        --text: #18181b;
+        --muted: #6b6b76;
+        --border: #e3e3e8;
+        --accent: #2f6fe4;
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 24px 0 4px;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 24px 0 4px;
+      }
+      p,
+      li {
+        margin: 4px 0;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+      [lang]:not(html)[hidden] {
+        display: none;
+      }
+    </style>
+    <script>
+      // Same language and theme the app saved on this phone (as on privacy.html).
+      try {
+        var lang = localStorage.getItem('language') === 'en' ? 'en' : 'it'
+        var theme = localStorage.getItem('theme')
+        if (theme === 'light' || (theme === 'system' && matchMedia('(prefers-color-scheme: light)').matches)) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      } catch (e) {
+        lang = 'it'
+      }
+      function show() {
+        var chosen = location.hash === '#en' || location.hash === '#it' ? location.hash.slice(1) : lang
+        document.documentElement.lang = chosen
+        document.querySelectorAll('main > [lang]').forEach(function (el) {
+          el.hidden = el.lang !== chosen
+        })
+      }
+      function copy(button) {
+        var text = button.parentElement.querySelector('.loader').textContent
+        navigator.clipboard.writeText(text).then(function () {
+          button.textContent = button.dataset.done
+        })
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        show()
+        document.querySelectorAll('.copy').forEach(function (b) {
+          b.addEventListener('click', function () {
+            copy(b)
+          })
+        })
+      })
+      window.addEventListener('hashchange', show)
+    </script>
+    <style>
+      ol {
+        padding-left: 20px;
+      }
+      li + li {
+        margin-top: 10px;
+      }
+      pre {
+        margin: 8px 0;
+        padding: 12px;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        font-size: 0.75rem;
+        line-height: 1.4;
+      }
+      button {
+        padding: 8px 14px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--accent);
+        color: var(--bg);
+        font: inherit;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section lang="it">
+        <nav><a href="./">← Calendario</a><a href="#en">English</a></nav>
+        <h1>Widget per iPhone</h1>
+        <p>
+          Le app web non possono avere widget propri su iPhone, quindi il widget passa dall'app gratuita
+          <strong>Scriptable</strong>. Mostra oggi e i prossimi giorni sulla schermata Home e sulla schermata di blocco,
+          con i colori e la foto di sfondo del calendario. Si aggiorna circa ogni 15 minuti.
+        </p>
+        <ol>
+          <li>Installa <a href="https://apps.apple.com/app/scriptable/id1405459188">Scriptable</a> dall'App Store.</li>
+          <li>
+            Copia questo codice: <button class="copy" data-done="Copiato ✓">Copia</button>
+            <pre class="loader">// Calendario: il widget del nostro calendario.
+// Scarica ogni volta l&#x27;ultima versione dal sito; offline usa l&#x27;ultima copia.
+const url = &#x27;https://ramonpegoretti.github.io/SharedCalendar/widget/calendario.js&#x27;
+const fm = FileManager.local()
+const file = fm.joinPath(fm.documentsDirectory(), &#x27;calendario-widget.js&#x27;)
+try {
+  const req = new Request(url)
+  const code = await req.loadString()
+  if (req.response.statusCode === 200) fm.writeString(file, code)
+} catch (e) {}
+await new Function(fm.readString(file) + &#x27;\nreturn Calendario&#x27;)().run()</pre>
+          </li>
+          <li>Apri Scriptable, tocca <strong>+</strong>, incolla il codice e chiama lo script <strong>Calendario</strong>.</li>
+          <li>Tocca lo script per avviarlo e accedi con il tuo username e la tua password. La password non viene salvata.</li>
+          <li>
+            Sulla schermata Home tieni premuto, tocca <strong>Modifica › Aggiungi widget</strong>, scegli
+            <strong>Scriptable</strong> e la misura che preferisci.
+          </li>
+          <li>Tieni premuto il nuovo widget, tocca <strong>Modifica widget</strong> e come Script scegli <strong>Calendario</strong>.</li>
+          <li>
+            Per la schermata di blocco: tienila premuta, tocca <strong>Personalizza</strong>, aggiungi un widget Scriptable e
+            scegli di nuovo <strong>Calendario</strong>.
+          </li>
+        </ol>
+        <p class="muted">Toccando il widget si apre il calendario su quel giorno. Per uscire, apri lo script in Scriptable e scegli Esci.</p>
+      </section>
+
+      <section lang="en" hidden>
+        <nav><a href="./">← Calendar</a><a href="#it">Italiano</a></nav>
+        <h1>iPhone widget</h1>
+        <p>
+          Web apps can't have widgets of their own on iPhone, so the widget runs in the free <strong>Scriptable</strong> app.
+          It shows today and the next few days on the Home Screen and the Lock Screen, with the calendar's colors and
+          background photo. It updates about every 15 minutes.
+        </p>
+        <ol>
+          <li>Install <a href="https://apps.apple.com/app/scriptable/id1405459188">Scriptable</a> from the App Store.</li>
+          <li>
+            Copy this code: <button class="copy" data-done="Copied ✓">Copy</button>
+            <pre class="loader">// Calendario: il widget del nostro calendario.
+// Scarica ogni volta l&#x27;ultima versione dal sito; offline usa l&#x27;ultima copia.
+const url = &#x27;https://ramonpegoretti.github.io/SharedCalendar/widget/calendario.js&#x27;
+const fm = FileManager.local()
+const file = fm.joinPath(fm.documentsDirectory(), &#x27;calendario-widget.js&#x27;)
+try {
+  const req = new Request(url)
+  const code = await req.loadString()
+  if (req.response.statusCode === 200) fm.writeString(file, code)
+} catch (e) {}
+await new Function(fm.readString(file) + &#x27;\nreturn Calendario&#x27;)().run()</pre>
+          </li>
+          <li>Open Scriptable, tap <strong>+</strong>, paste the code and name the script <strong>Calendario</strong>.</li>
+          <li>Tap the script to run it and log in with your username and password. The password is not saved.</li>
+          <li>
+            On the Home Screen, touch and hold, tap <strong>Edit › Add Widget</strong>, pick <strong>Scriptable</strong> and the
+            size you like.
+          </li>
+          <li>Touch and hold the new widget, tap <strong>Edit Widget</strong> and pick <strong>Calendario</strong> as the Script.</li>
+          <li>
+            For the Lock Screen: touch and hold it, tap <strong>Customize</strong>, add a Scriptable widget and pick
+            <strong>Calendario</strong> again.
+          </li>
+        </ol>
+        <p class="muted">Tapping the widget opens the calendar on that day. To log out, run the script in Scriptable and pick Log out.</p>
+      </section>
+    </main>
+  </body>
+</html>

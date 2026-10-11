@@ -8,6 +8,18 @@ Our shared calendar: events, tasks and notes for two, on both phones.
 - **Android (Chrome):** open the link, tap the ⋮ menu, then **Add to Home screen** / **Install app**.
 - **iPhone (Safari):** open the link, tap the Share button, then **Add to Home Screen**.
 
+## iPhone widget
+
+Web apps can't have home screen widgets of their own, so the iPhone widget runs in the free
+[Scriptable](https://scriptable.app) app. The setup steps are at
+[/SharedCalendar/widget.html](https://ramonpegoretti.github.io/SharedCalendar/widget.html) (also linked at the
+bottom of Settings): you paste a short loader script into Scriptable, run it once to log in, and add the widget.
+
+The widget itself is `widget/main.ts`. `npm run build` bundles it into `dist/widget/calendario.js`, and the loader
+downloads that file each time the widget refreshes, so the widget updates together with the app. It shows today and
+the next two weeks in the small, medium and large Home Screen sizes and on the Lock Screen, with each person's
+color and the background photo, and refreshes about every 15 minutes.
+
 ## How it's built
 - React + TypeScript + Vite, installable as a PWA.
 - Login and data on Supabase (free tier). Only two accounts can ever be created, and the app has no sign-up screen.
