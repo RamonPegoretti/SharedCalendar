@@ -10,11 +10,14 @@ import {
   MAX_LOCATION,
   MAX_NOTES,
   MAX_TITLE,
+  REMINDERS_TIMED,
+  REMINDERS_UNTIMED,
   type ItemKind,
   type Repeat,
 } from '../lib/items'
 import type { Occurrence } from '../lib/recurrence'
 import type { People } from '../lib/people'
+import { notificationsAllowed } from '../lib/push'
 
 interface Props {
   /** The item being edited (as it shows on its day), or undefined to add a new one. */
@@ -45,6 +48,7 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
   const [location, setLocation] = useState(item?.location ?? '')
   const [notes, setNotes] = useState(item?.notes ?? '')
   const [owner, setOwner] = useState<string | null>(item ? item.owner_id : (people.me?.id ?? null))
+  const [reminders, setReminders] = useState<number[]>(item?.reminders ?? [])
   // A repeating item asks whether a change is for this day only or for the whole series.
   const series = item?.series
   const [scope, setScope] = useState<'one' | 'all'>('one')
@@ -62,6 +66,7 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
     setLocation(from.location)
     setNotes(from.notes)
     setOwner(from.owner_id)
+    setReminders(from.reminders)
   }
   const rule = series ?? item
   const [repeat, setRepeat] = useState<Repeat | ''>(rule?.repeat ?? '')
@@ -71,6 +76,11 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
   const [busy, setBusy] = useState(false)
 
   const timed = kind === 'event' ? !allDay : kind === 'task'
+  // Without a start time a reminder goes off at 9:00, so only whole days make sense.
+  const reminderChoices = timed && start ? REMINDERS_TIMED : REMINDERS_UNTIMED
+  const toggleReminder = (m: number) =>
+    setReminders((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m].sort((a, b) => a - b)))
+
   // Only a whole series (or a one-off item) can change how it repeats.
   const canRepeat = series ? scope === 'all' : !item?.series_id
 
@@ -99,6 +109,7 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
       notes: notes.trim(),
       done: kind === 'task' ? (item?.done ?? false) : false,
       owner_id: owner,
+      reminders: reminders.filter((m) => reminderChoices.includes(m)),
     }
     const rules = repeat
       ? { repeat, repeat_every: everyN, repeat_until: until || null, done: false }
@@ -256,6 +267,26 @@ export default function ItemSheet({ item, day, people, onClose, onSaved }: Props
             <span className="small">{t('item.untilHint')}</span>
           </label>
         )}
+
+        <div className="field">
+          {t('item.reminders')}
+          <div className="chips" role="group" aria-label={t('item.reminders')}>
+            {reminderChoices.map((m) => (
+              <button
+                key={m}
+                type="button"
+                className="pill"
+                aria-pressed={reminders.includes(m)}
+                onClick={() => toggleReminder(m)}
+              >
+                {t(`reminder.${reminderChoices === REMINDERS_TIMED ? 'timed' : 'untimed'}${m}`)}
+              </button>
+            ))}
+          </div>
+          {reminders.length > 0 && !notificationsAllowed() && (
+            <span className="small">{t('item.remindersOff')}</span>
+          )}
+        </div>
 
         {kind === 'event' && (
           <label className="field">

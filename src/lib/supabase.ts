@@ -18,4 +18,8 @@ export interface Profile {
   display_name: string
   language: Language
   theme: Theme
+  /** Push me when the other person adds or changes something. */
+  notify_partner: boolean
+  /** IANA time zone the phone is in, so reminders go off at local time. */
+  time_zone: string
 }

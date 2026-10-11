@@ -6,6 +6,8 @@ import { useProfile, useSession } from './lib/useSession'
 import { usePeople } from './lib/people'
 import { useBackground } from './lib/background'
 import { dayKey } from './lib/items'
+import { refreshPush } from './lib/push'
+import { supabase } from './lib/supabase'
 import type { Occurrence } from './lib/recurrence'
 import LoginView from './views/LoginView'
 import MonthView from './views/MonthView'
@@ -29,6 +31,8 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
   const route = useRoute()
   const background = useBackground(userId)
   const [sheet, setSheet] = useState<Sheet | null>(null)
+  // Changed in settings during this visit (the profile itself is loaded once).
+  const [notifyPartner, setNotifyPartner] = useState<boolean>()
   // Bumped after a save so the open view reloads without waiting for the live update.
   const [version, setVersion] = useState(0)
 
@@ -38,7 +42,16 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
     if (!profile) return
     setLanguage(profile.language)
     applyTheme(profile.theme)
-  }, [profile])
+    // Reminders go off at the phone's local time.
+    const zone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (zone && zone !== profile.time_zone) {
+      void supabase.from('profiles').update({ time_zone: zone }).eq('id', userId)
+    }
+  }, [profile, userId])
+
+  useEffect(() => {
+    void refreshPush()
+  }, [])
 
   const close = () => setSheet(null)
   const saved = () => setVersion((v) => v + 1)
@@ -74,6 +87,9 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
           userId={userId}
           name={profile?.display_name ?? email}
           color={people.me?.color}
+          partnerName={people.partner?.display_name}
+          notifyPartner={notifyPartner ?? profile?.notify_partner ?? true}
+          onNotifyPartnerChange={setNotifyPartner}
           onColorChange={(c) => void setMyColor(c)}
           background={background}
           onClose={close}

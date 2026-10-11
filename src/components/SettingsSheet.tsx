@@ -1,9 +1,10 @@
-import { useState, type ChangeEvent } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase, type Language, type Theme } from '../lib/supabase'
 import { applyTheme, savedTheme } from '../lib/theme'
 import { PERSON_COLORS } from '../lib/people'
 import type { Background } from '../lib/background'
+import { disablePush, enablePush, pushState, sendTestPush, type PushState } from '../lib/push'
 import LanguageToggle from './LanguageToggle'
 
 interface Props {
@@ -11,11 +12,24 @@ interface Props {
   name: string
   color: string | undefined
   onColorChange: (color: string) => void
+  partnerName: string | undefined
+  notifyPartner: boolean
+  onNotifyPartnerChange: (on: boolean) => void
   background: Background
   onClose: () => void
 }
 
-export default function SettingsSheet({ userId, name, color, onColorChange, background, onClose }: Props) {
+export default function SettingsSheet({
+  userId,
+  name,
+  color,
+  onColorChange,
+  partnerName,
+  notifyPartner,
+  onNotifyPartnerChange,
+  background,
+  onClose,
+}: Props) {
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(savedTheme)
   const [photoState, setPhotoState] = useState<'idle' | 'busy' | 'error'>('idle')
@@ -37,7 +51,7 @@ export default function SettingsSheet({ userId, name, color, onColorChange, back
   }
 
   // Saved on the account too, so the choice follows the person to other devices.
-  const save = (fields: { language?: Language; theme?: Theme }) =>
+  const save = (fields: { language?: Language; theme?: Theme; notify_partner?: boolean }) =>
     supabase.from('profiles').update(fields).eq('id', userId).then(() => undefined)
 
   function chooseTheme(next: Theme) {
@@ -47,6 +61,45 @@ export default function SettingsSheet({ userId, name, color, onColorChange, back
   }
 
   const themes: Theme[] = ['dark', 'light', 'system']
+
+  const [push, setPush] = useState<PushState | undefined>(undefined)
+  const [pushNote, setPushNote] = useState('')
+  const [pushBusy, setPushBusy] = useState(false)
+  useEffect(() => {
+    void pushState().then(setPush)
+  }, [])
+
+  async function togglePush() {
+    setPushBusy(true)
+    setPushNote('')
+    try {
+      if (push === 'on') {
+        await disablePush()
+        setPush('off')
+      } else {
+        setPush(await enablePush())
+      }
+    } catch {
+      setPushNote(t('notify.error'))
+    }
+    setPushBusy(false)
+  }
+
+  async function test() {
+    setPushNote('')
+    setPushNote((await sendTestPush()) ? t('notify.testSent') : t('notify.error'))
+  }
+
+  function chooseNotifyPartner(on: boolean) {
+    onNotifyPartnerChange(on)
+    void save({ notify_partner: on })
+  }
+
+  async function logout() {
+    // This phone shouldn't keep getting notifications for an account that left it.
+    await disablePush().catch(() => undefined)
+    await supabase.auth.signOut()
+  }
 
   return (
     <div className="sheet-backdrop" onClick={onClose}>
@@ -115,9 +168,39 @@ export default function SettingsSheet({ userId, name, color, onColorChange, back
           </div>
         </div>
 
+        <div className="setting stacked">
+          <div className="setting-line">
+            <span>{t('notify.title')}</span>
+            {(push === 'on' || push === 'off') && (
+              <button type="button" className="pill" aria-pressed={push === 'on'} disabled={pushBusy} onClick={togglePush}>
+                {push === 'on' ? t('notify.on') : t('notify.turnOn')}
+              </button>
+            )}
+          </div>
+          {push && push !== 'on' && push !== 'off' && <p className="small muted">{t(`notify.${push}`)}</p>}
+          {push === 'off' && <p className="small muted">{t('notify.why')}</p>}
+          {push === 'on' && (
+            <>
+              <label className="setting-line">
+                <span>{t('notify.partner', { name: partnerName ?? t('tag.partner') })}</span>
+                <input
+                  type="checkbox"
+                  className="toggle"
+                  checked={notifyPartner}
+                  onChange={(e) => chooseNotifyPartner(e.target.checked)}
+                />
+              </label>
+              <button type="button" className="link" onClick={test}>
+                {t('notify.test')}
+              </button>
+            </>
+          )}
+          {pushNote && <p className="small muted">{pushNote}</p>}
+        </div>
+
         <footer className="sheet-footer">
           <span className="muted">{t('settings.signedInAs', { name })}</span>
-          <button className="danger" onClick={() => void supabase.auth.signOut()}>
+          <button className="danger" onClick={() => void logout()}>
             {t('settings.logout')}
           </button>
         </footer>

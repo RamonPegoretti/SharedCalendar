@@ -88,6 +88,16 @@ const it = {
     startRequired: 'Scegli l’ora di inizio o segna “Tutto il giorno”.',
     endBeforeStart: 'La fine deve essere dopo l’inizio.',
     saveError: 'Non è stato possibile salvare. Riprova.',
+    reminders: 'Promemoria',
+    remindersOff: 'Per riceverli su questo telefono, attiva le notifiche nelle impostazioni.',
+  },
+  reminder: {
+    timed0: 'All’ora',
+    timed15: '15 min prima',
+    timed60: '1 ora prima',
+    timed1440: '1 giorno prima',
+    untimed0: 'Il giorno (9:00)',
+    untimed1440: 'Il giorno prima (9:00)',
   },
   repeat: {
     never: 'Mai',
@@ -123,6 +133,20 @@ const it = {
     backgroundRemove: 'Rimuovi',
     backgroundSaving: 'Salvataggio…',
     backgroundError: 'Non è stato possibile salvare lo sfondo. Riprova.',
+  },
+  notify: {
+    title: 'Notifiche su questo telefono',
+    turnOn: 'Attiva',
+    on: 'Attive',
+    why: 'Promemoria e avvisi quando l’altra persona cambia qualcosa.',
+    install:
+      'Su iPhone le notifiche funzionano solo dall’app sulla schermata Home: in Safari tocca Condividi, poi “Aggiungi alla schermata Home”, e apri il calendario da lì.',
+    denied: 'Le notifiche sono bloccate per questa app. Riattivale nelle impostazioni del telefono, poi riapri il calendario.',
+    unsupported: 'Questo browser non supporta le notifiche.',
+    partner: 'Avvisami quando {{name}} aggiunge o modifica qualcosa',
+    test: 'Invia una notifica di prova',
+    testSent: 'Inviata: dovrebbe arrivare tra pochi secondi.',
+    error: 'Non ha funzionato. Riprova tra un minuto.',
   },
 }
 

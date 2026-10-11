@@ -23,7 +23,7 @@ export function useProfile(userId: string | undefined) {
     let cancelled = false
     supabase
       .from('profiles')
-      .select('id, username, display_name, language, theme')
+      .select('id, username, display_name, language, theme, notify_partner, time_zone')
       .eq('id', userId)
       .single()
       .then(({ data }) => {
