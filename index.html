@@ -2,6 +2,8 @@
 <html lang="it" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
+    <!-- Only our own code may run, and the app may only talk to our Supabase project. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://eqwxzvgglodkefwutapi.supabase.co wss://eqwxzvgglodkefwutapi.supabase.co; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
     <link rel="icon" type="image/svg+xml" href="/SharedCalendar/favicon.svg" />
     <link rel="apple-touch-icon" href="/SharedCalendar/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -10,14 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Calendario" />
     <title>Calendario</title>
-    <script>
-      // Apply the saved theme before first paint so there is no flash.
-      try {
-        var t = localStorage.getItem('theme') || 'dark'
-        if (t === 'system') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-        document.documentElement.dataset.theme = t
-      } catch (e) {}
-    </script>
+    <script src="/SharedCalendar/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>
