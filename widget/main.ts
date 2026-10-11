@@ -192,6 +192,8 @@ interface Row extends Repeating {
   end_time: string | null
   done: boolean
   owner_id: string | null
+  /** The item's own color, or null for its owner's color. */
+  color: string | null
 }
 
 interface Snapshot {
@@ -211,7 +213,7 @@ const cachePath = (name: string) => files.joinPath(files.cacheDirectory(), `cale
 async function loadData(session: Session, from: string, to: string, withPhoto: boolean): Promise<Snapshot> {
   const token = session.access_token
   const columns =
-    'id,kind,title,day,all_day,start_time,end_time,done,owner_id,repeat,repeat_every,repeat_until,skip_days,series_id,series_day'
+    'id,kind,title,day,all_day,start_time,end_time,done,owner_id,color,repeat,repeat_every,repeat_until,skip_days,series_id,series_day'
   // The same three groups the app loads (see useItems in src/lib/items.ts).
   const filter =
     `(and(repeat.is.null,day.gte.${from},day.lte.${to}),` +
@@ -297,7 +299,7 @@ function entries(data: Snapshot, from: string, to: string, now: Date): Entry[] {
       title: o.title,
       time: !o.all_day && o.start_time ? o.start_time.slice(0, 5) : '',
       start: o.start_time ?? '',
-      color: colorOf(o.owner_id),
+      color: o.color ?? colorOf(o.owner_id),
     }))
 }
 
