@@ -45,6 +45,8 @@ body {
 }
 
 #root {
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
   max-width: 720px;
   margin: 0 auto;
@@ -311,22 +313,35 @@ button {
   letter-spacing: 0.04em;
 }
 
+.month {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The month fills the rest of the screen: rows share the height equally. */
 .grid {
+  flex: 1;
+  grid-auto-rows: minmax(64px, 1fr);
   gap: 4px;
 }
 
 .cell {
-  aspect-ratio: 1 / 1.15;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding-top: 8px;
-  border-radius: 12px;
+  padding-top: 6px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+}
+
+.cell.outside {
+  background: color-mix(in srgb, var(--surface) 30%, transparent);
 }
 
 .cell:hover {
-  background: var(--surface);
+  background: var(--surface-2);
 }
 
 .cell .num {
@@ -384,6 +399,90 @@ button {
   font-size: 1.9rem;
   line-height: 1;
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+}
+
+/* ---------- background photo ---------- */
+
+/* The photo sits behind everything, dimmed with the theme's background colour
+   so text stays readable on light and dark themes alike. */
+.photo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+}
+
+/* body's own background would cover the photo; the page colour stays on html. */
+:root[data-photo] body {
+  background: transparent;
+}
+
+.photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
+}
+
+:root[data-photo] .cell {
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+:root[data-photo] .cell.outside {
+  background: color-mix(in srgb, var(--bg) 25%, transparent);
+}
+
+:root[data-photo] .cell.outside .num {
+  color: var(--muted);
+}
+
+:root[data-photo] .weekdays span,
+:root[data-photo] .topbar,
+:root[data-photo] .group h2,
+:root[data-photo] .empty {
+  text-shadow: 0 1px 3px color-mix(in srgb, var(--bg) 90%, transparent);
+}
+
+:root[data-photo] .weekdays span,
+:root[data-photo] .icon,
+:root[data-photo] .pill {
+  color: var(--text);
+}
+
+:root[data-photo] .pill {
+  background: color-mix(in srgb, var(--bg) 50%, transparent);
+}
+
+.photo-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.photo-pick {
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.photo-pick input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.danger-link {
+  color: var(--danger);
+}
+
+.setting .message {
+  display: block;
+  margin-top: 4px;
 }
 
 /* ---------- day ---------- */

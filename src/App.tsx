@@ -4,6 +4,7 @@ import { applyTheme } from './lib/theme'
 import { useRoute } from './lib/route'
 import { useProfile, useSession } from './lib/useSession'
 import { usePeople } from './lib/people'
+import { useBackground } from './lib/background'
 import { dayKey } from './lib/items'
 import type { Occurrence } from './lib/recurrence'
 import LoginView from './views/LoginView'
@@ -26,6 +27,7 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
   const profile = useProfile(userId)
   const { people, setMyColor } = usePeople(userId)
   const route = useRoute()
+  const background = useBackground(userId)
   const [sheet, setSheet] = useState<Sheet | null>(null)
   // Bumped after a save so the open view reloads without waiting for the live update.
   const [version, setVersion] = useState(0)
@@ -41,8 +43,15 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
   const close = () => setSheet(null)
   const saved = () => setVersion((v) => v + 1)
 
+  // Lets the styles make cells and text stand out over the photo.
+  useEffect(() => {
+    if (background.url) document.documentElement.dataset.photo = ''
+    else delete document.documentElement.dataset.photo
+  }, [background.url])
+
   return (
     <>
+      {background.url && <div className="photo" style={{ backgroundImage: `url(${background.url})` }} aria-hidden="true" />}
       {route.view === 'day' ? (
         <DayView
           key={`${dayKey(route.day)}-${version}`}
@@ -66,6 +75,7 @@ function SignedIn({ userId, email }: { userId: string; email: string }) {
           name={profile?.display_name ?? email}
           color={people.me?.color}
           onColorChange={(c) => void setMyColor(c)}
+          background={background}
           onClose={close}
         />
       )}
