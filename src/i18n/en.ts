@@ -119,6 +119,10 @@ const en: Strings = {
     logout: 'Log out',
     myColor: 'My color',
     close: 'Close',
+    install: 'Install the app',
+    installIos: 'In Safari tap Share (the square with the arrow), then “Add to Home Screen”.',
+    installInApp: 'This page is open inside another app. Open it in Chrome or Safari to install it.',
+    installManual: 'In the browser menu (⋮) choose “Install app” or “Add to Home screen”.',
   },
 }
 

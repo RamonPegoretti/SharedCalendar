@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase, type Language, type Theme } from '../lib/supabase'
 import { applyTheme, savedTheme } from '../lib/theme'
 import { PERSON_COLORS } from '../lib/people'
+import { useInstall } from '../lib/install'
 import LanguageToggle from './LanguageToggle'
 
 interface Props {
@@ -16,6 +17,7 @@ interface Props {
 export default function SettingsSheet({ userId, name, color, onColorChange, onClose }: Props) {
   const { t } = useTranslation()
   const [theme, setTheme] = useState<Theme>(savedTheme)
+  const { state: installState, install } = useInstall()
 
   // Saved on the account too, so the choice follows the person to other devices.
   const save = (fields: { language?: Language; theme?: Theme }) =>
@@ -71,6 +73,27 @@ export default function SettingsSheet({ userId, name, color, onColorChange, onCl
             ))}
           </div>
         </div>
+
+        {installState !== 'installed' && (
+          <div className={installState === 'prompt' ? 'setting' : 'setting stacked'}>
+            <span>{t('settings.install')}</span>
+            {installState === 'prompt' ? (
+              <button type="button" onClick={() => void install()}>
+                {t('settings.install')}
+              </button>
+            ) : (
+              <p className="muted install-help">
+                {t(
+                  installState === 'ios'
+                    ? 'settings.installIos'
+                    : installState === 'inApp'
+                      ? 'settings.installInApp'
+                      : 'settings.installManual',
+                )}
+              </p>
+            )}
+          </div>
+        )}
 
         <footer className="sheet-footer">
           <span className="muted">{t('settings.signedInAs', { name })}</span>

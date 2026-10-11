@@ -117,6 +117,10 @@ const it = {
     logout: 'Esci',
     myColor: 'Il mio colore',
     close: 'Chiudi',
+    install: 'Installa l’app',
+    installIos: 'In Safari tocca Condividi (il quadrato con la freccia), poi “Aggiungi alla schermata Home”.',
+    installInApp: 'Questa pagina è aperta dentro un’altra app. Aprila in Chrome o Safari per installarla.',
+    installManual: 'Nel menu del browser (⋮) scegli “Installa app” o “Aggiungi a schermata Home”.',
   },
 }
 
