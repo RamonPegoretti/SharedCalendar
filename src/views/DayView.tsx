@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { dateLocale } from '../i18n'
 import { dayHref, monthHref } from '../lib/route'
 import { setDone, shortTime, sortItems, useItems } from '../lib/items'
+import { useSwipe } from '../lib/useSwipe'
 import type { Occurrence } from '../lib/recurrence'
 import type { People } from '../lib/people'
 
@@ -19,6 +20,11 @@ export default function DayView({ day, people, onOpenItem, onAdd }: Props) {
   const { t, i18n } = useTranslation()
   const locale = dateLocale(i18n.language)
   const { items, reload } = useItems(day, day)
+  // Swipe left for the next day, right for the previous one.
+  useSwipe(
+    () => (location.hash = dayHref(addDays(day, 1))),
+    () => (location.hash = dayHref(addDays(day, -1))),
+  )
 
   const sorted = sortItems(items ?? [])
   const events = sorted.filter((i) => i.kind === 'event')

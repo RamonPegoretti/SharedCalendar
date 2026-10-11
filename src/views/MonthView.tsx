@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next'
 import { dateLocale } from '../i18n'
 import { dayHref, monthHref } from '../lib/route'
 import { dayKey, sortItems, useItems } from '../lib/items'
+import { useSwipe } from '../lib/useSwipe'
 import type { People } from '../lib/people'
 
 interface Props {
@@ -28,6 +29,11 @@ const MAX_DOTS = 4
 export default function MonthView({ month, people, onOpenSettings, onAdd }: Props) {
   const { t, i18n } = useTranslation()
   const locale = dateLocale(i18n.language)
+  // Swipe left for the next month, right for the previous one.
+  useSwipe(
+    () => (location.hash = monthHref(addMonths(month, 1))),
+    () => (location.hash = monthHref(addMonths(month, -1))),
+  )
 
   const first = startOfWeek(startOfMonth(month), { locale })
   const last = endOfWeek(endOfMonth(month), { locale })
