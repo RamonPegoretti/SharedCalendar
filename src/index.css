@@ -736,3 +736,13 @@ button {
   transform: translateX(18px);
   background: var(--accent-text);
 }
+
+/* ---------- privacy link (login screen and settings) ---------- */
+
+.privacy-link {
+  display: block;
+  align-self: center;
+  margin-top: 16px;
+  padding: 8px;
+  text-align: center;
+}

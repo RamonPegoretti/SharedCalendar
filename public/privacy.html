@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Privacy</title>
+    <style>
+      :root {
+        --bg: #121214;
+        --text: #ececf1;
+        --muted: #8b8b96;
+        --border: #2e2e34;
+        --accent: #8ab4ff;
+        color-scheme: dark;
+      }
+      :root[data-theme='light'] {
+        --bg: #fafafa;
+        --text: #18181b;
+        --muted: #6b6b76;
+        --border: #e3e3e8;
+        --accent: #2f6fe4;
+        color-scheme: light;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.5;
+      }
+      main {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 24px 16px 48px;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+      }
+      a {
+        color: var(--accent);
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 24px 0 4px;
+      }
+      h2 {
+        font-size: 1.05rem;
+        margin: 24px 0 4px;
+      }
+      p,
+      li {
+        margin: 4px 0;
+      }
+      ul {
+        padding-left: 20px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.875rem;
+      }
+      [lang]:not(html)[hidden] {
+        display: none;
+      }
+    </style>
+    <script>
+      // Same language and theme the app saved on this phone.
+      try {
+        var lang = localStorage.getItem('language') === 'en' ? 'en' : 'it'
+        var theme = localStorage.getItem('theme')
+        if (theme === 'light' || (theme === 'system' && matchMedia('(prefers-color-scheme: light)').matches)) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      } catch (e) {
+        lang = 'it'
+      }
+      function show() {
+        var chosen = location.hash === '#en' || location.hash === '#it' ? location.hash.slice(1) : lang
+        document.documentElement.lang = chosen
+        document.querySelectorAll('main > [lang]').forEach(function (el) {
+          el.hidden = el.lang !== chosen
+        })
+      }
+      document.addEventListener('DOMContentLoaded', show)
+      window.addEventListener('hashchange', show)
+    </script>
+  </head>
+  <body>
+    <main>
+      <section lang="it">
+        <nav><a href="./">← Calendario</a><a href="#en">English</a></nav>
+        <h1>Privacy</h1>
+        <p class="muted">Aggiornata l'11 ottobre 2026</p>
+
+        <p>
+          Questo calendario è un'app privata per due persone. Non ci sono pubblicità, statistiche di utilizzo né
+          tracciamento, e i dati non vengono venduti né condivisi con nessuno. Lo gestisce Ramon.
+        </p>
+
+        <h2>Cosa viene salvato</h2>
+        <ul>
+          <li><strong>Account:</strong> nome, nome utente, email e password (salvata cifrata, nessuno può leggerla).</li>
+          <li><strong>Calendario:</strong> eventi, attività e note che scrivi, con chi li ha creati o modificati e quando.</li>
+          <li><strong>Preferenze:</strong> lingua, tema, colore, fuso orario e se vuoi le notifiche sulle modifiche dell'altra persona.</li>
+          <li><strong>Notifiche:</strong> se le attivi, l'indirizzo che il tuo telefono fornisce per riceverle.</li>
+          <li><strong>Sfondo:</strong> se scegli una foto di sfondo, la foto stessa.</li>
+          <li><strong>Sicurezza:</strong> l'indirizzo IP per al massimo un giorno, solo per bloccare troppi tentativi di accesso.</li>
+        </ul>
+        <p>Tutto ciò che è nel calendario è visibile a entrambi gli account.</p>
+
+        <h2>Dove sono i dati</h2>
+        <ul>
+          <li>Account e dati del calendario sono su <strong>Supabase</strong>, in un server a Zurigo (Svizzera).</li>
+          <li>L'app stessa è pubblicata su <strong>GitHub Pages</strong>, che può registrare l'indirizzo IP di chi apre la pagina.</li>
+          <li>
+            Le notifiche passano dal servizio del tuo telefono (Google per Android, Apple per iPhone). Il contenuto viaggia
+            cifrato.
+          </li>
+          <li>Sul telefono restano solo il login, la lingua e il tema.</li>
+        </ul>
+
+        <h2>Per quanto tempo</h2>
+        <p>
+          Un elemento resta finché qualcuno non lo cancella. Disattivare le notifiche o uscire cancella l'indirizzo delle
+          notifiche di quel telefono. Per cancellare l'account e tutti i suoi dati, chiedi a Ramon.
+        </p>
+
+        <h2>I tuoi diritti</h2>
+        <p>Puoi chiedere a Ramon di vedere, correggere, esportare o cancellare i tuoi dati in qualsiasi momento.</p>
+      </section>
+
+      <section lang="en" hidden>
+        <nav><a href="./">← Calendar</a><a href="#it">Italiano</a></nav>
+        <h1>Privacy</h1>
+        <p class="muted">Updated 11 October 2026</p>
+
+        <p>
+          This calendar is a private app for two people. There are no ads, no usage analytics and no tracking, and the
+          data is never sold or shared with anyone. Ramon runs it.
+        </p>
+
+        <h2>What is stored</h2>
+        <ul>
+          <li><strong>Account:</strong> name, username, email and password (stored scrambled, nobody can read it).</li>
+          <li><strong>Calendar:</strong> the events, tasks and notes you write, with who created or changed them and when.</li>
+          <li><strong>Preferences:</strong> language, theme, color, time zone and whether you want to hear about the other person's changes.</li>
+          <li><strong>Notifications:</strong> if you turn them on, the address your phone provides to receive them.</li>
+          <li><strong>Background:</strong> if you pick a background photo, the photo itself.</li>
+          <li><strong>Security:</strong> your IP address for at most a day, only to block too many login attempts.</li>
+        </ul>
+        <p>Everything in the calendar is visible to both accounts.</p>
+
+        <h2>Where the data lives</h2>
+        <ul>
+          <li>Accounts and calendar data are on <strong>Supabase</strong>, on a server in Zurich (Switzerland).</li>
+          <li>The app itself is published on <strong>GitHub Pages</strong>, which may log the IP address of whoever opens the page.</li>
+          <li>Notifications go through your phone's own service (Google on Android, Apple on iPhone). Their content is encrypted on the way.</li>
+          <li>Your phone only keeps your login, language and theme.</li>
+        </ul>
+
+        <h2>How long</h2>
+        <p>
+          An item stays until someone deletes it. Turning notifications off or logging out removes that phone's
+          notification address. To delete an account and all its data, ask Ramon.
+        </p>
+
+        <h2>Your rights</h2>
+        <p>You can ask Ramon to see, correct, export or delete your data at any time.</p>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 const it = {
   appName: 'Calendario',
+  privacy: 'Privacy',
   auth: {
     login: 'Accedi',
     signup: 'Crea account',

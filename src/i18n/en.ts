@@ -2,6 +2,7 @@ import type { Strings } from './it'
 
 const en: Strings = {
   appName: 'Calendar',
+  privacy: 'Privacy',
   auth: {
     login: 'Log in',
     signup: 'Create account',
