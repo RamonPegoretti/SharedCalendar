@@ -49,3 +49,8 @@ SQL changes to Supabase live in `supabase/migrations/`, oldest first. They are a
 - Repeating items are expanded by `supabase/functions/_shared/recurrence.ts`, the same file the app uses, so reminders fall on the days the calendar shows.
 - Tests for the reminder logic: `deno test supabase/functions/push`.
 - Deploy the function with the Supabase CLI (`supabase functions deploy push --no-verify-jwt`) or the Supabase connector. It checks its own secret, which the database creates; its VAPID keys are created on its first run.
+
+## HolyExam tests
+- Ramon's class tests from HolyExam show up as all-day events tagged as his. The [holyexamViewer](https://github.com/RamonPegoretti/holyexamViewer) job, which already signs in to HolyExam, sends the list to `holyexam_sync_exams` (migration `20261020150000_holyexam_exams.sql`) every time it runs.
+- Each imported event keeps the HolyExam test id in `items.external_id`. A changed test updates its event, a removed test removes it, and items made in the app (no `external_id`) are never touched. An empty list removes nothing.
+- Editing an imported event in the app works, but the next sync puts back HolyExam's title, notes and date.
